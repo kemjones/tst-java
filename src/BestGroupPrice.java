@@ -57,6 +57,15 @@ public class BestGroupPrice {
 		});
 		//System.out.printf("%d values\n", result.size());
 
-		return result;
+		// sort them by cabinCode, rateGroup, and price
+		Comparator<BestGroupPrice> cmp = Comparator
+				.comparing(BestGroupPrice::getCabinCode)
+				.thenComparing(BestGroupPrice::getRateGroup)
+				.thenComparing(BestGroupPrice::getPrice)
+				;
+		return result.stream()
+				.sorted(cmp)
+				.collect(Collectors.toList())
+				;
 	}
 }
