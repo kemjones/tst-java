@@ -58,6 +58,7 @@ public class BestGroupPrice {
 		//System.out.printf("%d values\n", result.size());
 
 		// sort them by cabinCode, rateGroup, and price
+		// return distinct cabin code and rate group items
 		Comparator<BestGroupPrice> cmp = Comparator
 				.comparing(BestGroupPrice::getCabinCode)
 				.thenComparing(BestGroupPrice::getRateGroup)
@@ -65,7 +66,21 @@ public class BestGroupPrice {
 				;
 		return result.stream()
 				.sorted(cmp)
+				.filter(distinctByKeys(BestGroupPrice::getCabinCode, BestGroupPrice::getRateGroup))
 				.collect(Collectors.toList())
 				;
+	}
+	@SafeVarargs
+	private static <T> Predicate<T> distinctByKeys(Function<? super T, ?>... keyExtractors)
+	{
+		final Map<List<?>, Boolean> seen = new HashMap<>();
+		return t ->
+		{
+			final List<?> keys = Arrays.stream(keyExtractors)
+					.map(ke -> ke.apply(t))
+					.collect(Collectors.toList())
+					;
+			return seen.putIfAbsent(keys, Boolean.TRUE) == null;
+		};
 	}
 }
