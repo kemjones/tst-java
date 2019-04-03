@@ -34,9 +34,29 @@ public class BestGroupPrice {
 	public String getRateGroup() {
 		return rateGroup;
 	}
+	public String toString() {
+		return String.format("BestGroupPrice(%s, %s, %s, %s)", cabinCode, rateCode, price, rateGroup);
+	}
 
 	public static List<BestGroupPrice> getBestGroupPrices(List<Rate> rates, List<CabinPrice> prices) {
 		List<BestGroupPrice> result = new LinkedList<>();
+
+		//System.out.printf("\nRates:\n");
+		//rates.stream().forEach(System.out::println);
+		//System.out.printf("\nCabinPrices:\n");
+		//prices.stream().forEach(System.out::println);
+
+		// Combine rates and prices
+		prices.stream().forEach(p -> {
+			//System.out.printf("p=%s\n", p);
+			rates.stream().filter(r -> r.getCode().equals(p.getRateCode()))
+				.forEach(r -> {
+					//System.out.printf("r=%s\n", r);
+					result.add(new BestGroupPrice(p.getCabinCode(), p.getRateCode(), p.getPrice(), r.getGroup()));
+				});
+		});
+		//System.out.printf("%d values\n", result.size());
+
 		return result;
 	}
 }
